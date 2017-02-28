@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+#include <QElapsedTimer>
 #include <QGraphicsView>
 #include <QTimer>
 
@@ -46,6 +47,7 @@ private:
     quint64 mi_LayerCurrentIndex;
     quint64 mi_Interval;
     QTimer ms_IntervalTimer;
+    QElapsedTimer ms_LastOutput;
 };
 
 #endif // SVGVIEW_H

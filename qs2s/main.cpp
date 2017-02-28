@@ -7,6 +7,10 @@ int main ( int argc, char* argv[] )
 {
     QApplication a ( argc, argv );
 
+    //printf("argc=%d\n",argc);
+    //for(int i=0;i < argc;++i)
+    //    printf("argv[%d]:=%s\n",i,argv[i]);
+
     QCoreApplication::setApplicationName ( "Svg to screeen" );
     QCoreApplication::setApplicationVersion ( "1.0" );
 
@@ -31,6 +35,8 @@ int main ( int argc, char* argv[] )
     parser.process ( a );
 
     const QStringList args = parser.positionalArguments();
+
+    qDebug() << args;
 
     QString svgFile = parser.value ( svgOption );
     bool noFullscreen = parser.isSet ( fulscreenOption );

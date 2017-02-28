@@ -2,40 +2,137 @@
 
 
 {% block content %}
- <div class="starter-template">
-    <h1>Urtica</h1>
+<!--div class="starter-template">
+    <h1>Dlp Printer</h1>
     <p class="lead">Web console.</p>
-  </div>
+</div-->
+<style>
+    .btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+
+</style>
+<div class="row">
+    <div class="col-lg-12">
+        <h2>Log stampante  <span id="message"></span> </h2>
+        <p>Stato stampa: <span id="print_state"></span></p>
+<textarea readonly id="logarea" class="form-control" style="min-width: 100%" rows="10">
+</textarea>
+        <!--p><a class="btn btn-primary" href="#" role="button">P »</a></p-->
+    </div>
+</div>
 
 <div class="row">
-    <div class="col-lg-4">
-      <h2>Log eventi</h2>
-      <p>Seguendo questo link è possibile visualizzare gli eventi in live.</p>
-      <p><a class="btn btn-primary" href="#" role="button">Vai »</a></p>
+    <div class="col-lg-12">
+        <h2>Files presenti</h2>
+        <table class="table table-striped">
+            <thead>
+
+            <tr>
+                <th width="5%">#</th>
+                <th>Filename</th>
+                <th width="10%"> </th>
+                <th width="10%"> </th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for idx, s in enumerate( svgs ) %}
+                 <tr>
+                    <th scope="row"> {{ idx +1 }}</th>
+                    <td>{{ s }}</td>
+                    <td>
+                        <a href="/delete?file={{ s }}" class="btn btn-danger">Delete</a>
+                    </td>
+                     <td>
+                        <button href="#" class="btn btn-primary" onclick="printFile('{{ s }}')">Print</button>
+                    </td>
+
+                </tr>
+            {% end %}
+
+
+            </tbody>
+        </table>
     </div>
-    <div class="col-lg-4">
-      <h2>Data e ora</h2>
-      <p>Premendo il pulsante <strong>"Imposta"</strong> verrà sincronizzata l'ora del device con quella del sistema da cui si sta visualizzando questa interfaccia.</p>
-      <p>
-         <form method="POST" action="{{ reverse_url('sync_time') }}" id="timeform">
-              <input id="new_curr_time" name="new_curr_time" value="suka" type="hidden">
-          <button type="button" onclick="update_time()" class="btn btn-primary">Imposta »</button>
+
+    <div class="col-lg-12">
+        <form action="/upload" method="post" enctype="multipart/form-data">
+          <label class="btn btn-default btn-file">
+            Select new SVG file<input type="file" name="file1" hidden>
+          </label>
+          <input class="btn btn-primary" type="submit" value="Upload">
         </form>
-        </p>
-   </div>
-    <div class="col-lg-4">
-      <h2>Download log</h2>
-      <p>Premere il pulsante <strong>Scarica</strong> per eseguire un download immediato di tutti i log correnti.</p>
-      <p><a class="btn btn-primary" href="#" role="button">Scarica »</a></p>
     </div>
-  </div>
+
+</div>
+{% end %}
+
+
+{% block additional_js %}
 
 <script>
-    function update_time()
-    {
-        $( "#new_curr_time" ).val( Date.now() / 1000 | 0 );
-        $( "#timeform" ).submit();
-    }
-</script>
+    var host = window.location.host;
+    var ws = new WebSocket('ws://'+host+'/ws');
+    var $message = $('#message');
+    ws.onopen = function(){
+      $message.attr("class", 'label label-success');
+      $message.text('open');
+    };
+    ws.onmessage = function(ev){
+      $message.attr("class", 'label label-info');
+      $message.hide();
+      $message.fadeIn("slow");
 
+        console.log( ev.data  )
+
+        var json = JSON.parse(ev.data);
+
+
+      if ( json.mtype == "message" ) {
+          $('#logarea').append(json.text + '\n');
+      }
+      else if ( json.mtype == "status" ) {
+          $('#print_state').text(json.perc + ' %');
+      }
+
+    };
+    ws.onclose = function(ev){
+      $message.attr("class", 'label label-important');
+      $message.text('closed');
+    };
+    ws.onerror = function(ev){
+      $message.attr("class", 'label label-warning');
+      $message.text('error occurred');
+    };
+
+    function wswrite( data )
+    {
+        ws.write("gnaps");
+    }
+
+    function printFile( f )
+    {
+        var jobj={"action":"print", "file":f};
+        var json_data = JSON.stringify( jobj );
+        ws.send( json_data );
+    }
+  </script>
 {% end %}

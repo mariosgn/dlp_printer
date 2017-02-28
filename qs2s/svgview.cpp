@@ -28,6 +28,7 @@ SvgView::SvgView ( QWidget* parent ) :
 
     connect ( &ms_IntervalTimer, &QTimer::timeout, this, &SvgView::showLayer );
     ms_IntervalTimer.setSingleShot ( true );
+    ms_LastOutput.start();
 }
 
 void SvgView::drawBackground ( QPainter* p, const QRectF& )
@@ -151,8 +152,17 @@ void SvgView::startAnimation ( quint64 startDelayMs, quint64 intervalMs )
 void SvgView::showLayer()
 {
     QString currId = ml_SvgIds.at ( mi_LayerCurrentIndex++ );
-    int perc = (mi_LayerCurrentIndex*100 ) / ml_SvgIds.size();
-//    qInfo() << "printing|Layer:" << currId << "|perc" << perc <<"%";
+
+    if ( ms_LastOutput.elapsed() > 1000 * 1 )
+    {
+        int perc = (mi_LayerCurrentIndex*100 ) / ml_SvgIds.size();
+        QString outstr = QString( "{\"mtype\": \"status\", \"perc\": \"%1\"}\n").arg( perc );
+        QTextStream out(stdout, QIODevice::WriteOnly);
+        out << outstr;
+        out.flush();
+
+        ms_LastOutput.restart();
+    }
 
     mp_SvgSingleLayer->setElementId ( currId );
     mp_SvgSingleLayer->show();

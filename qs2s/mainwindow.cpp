@@ -29,5 +29,5 @@ void MainWindow::startAnimation ( quint64 startDelayMs, quint64 intervalMs )
 void MainWindow::readCommand()
 {
     QTextStream stream ( stdin, QIODevice::ReadOnly );
-    qDebug() <<"COMMAND "<< stream.readLine();
+//    qDebug() <<"COMMAND "<< stream.readLine();
 }
