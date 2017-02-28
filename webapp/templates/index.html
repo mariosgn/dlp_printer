@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+ <div class="starter-template">
+    <h1>Urtica</h1>
+    <p class="lead">Web console.</p>
+  </div>
+
+<div class="row">
+    <div class="col-lg-4">
+      <h2>Log eventi</h2>
+      <p>Seguendo questo link è possibile visualizzare gli eventi in live.</p>
+      <p><a class="btn btn-primary" href="#" role="button">Vai »</a></p>
+    </div>
+    <div class="col-lg-4">
+      <h2>Data e ora</h2>
+      <p>Premendo il pulsante <strong>"Imposta"</strong> verrà sincronizzata l'ora del device con quella del sistema da cui si sta visualizzando questa interfaccia.</p>
+      <p>
+         <form method="POST" action="{{ reverse_url('sync_time') }}" id="timeform">
+              <input id="new_curr_time" name="new_curr_time" value="suka" type="hidden">
+          <button type="button" onclick="update_time()" class="btn btn-primary">Imposta »</button>
+        </form>
+        </p>
+   </div>
+    <div class="col-lg-4">
+      <h2>Download log</h2>
+      <p>Premere il pulsante <strong>Scarica</strong> per eseguire un download immediato di tutti i log correnti.</p>
+      <p><a class="btn btn-primary" href="#" role="button">Scarica »</a></p>
+    </div>
+  </div>
+
+<script>
+    function update_time()
+    {
+        $( "#new_curr_time" ).val( Date.now() / 1000 | 0 );
+        $( "#timeform" ).submit();
+    }
+</script>
+
+{% end %}

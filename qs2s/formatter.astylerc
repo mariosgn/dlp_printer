@@ -1,0 +1,1 @@
+--style=allman --indent=spaces=4 --min-conditional-indent=0 --align-pointer=type --align-reference=type --indent-switches --indent-cases --indent-namespaces --pad-oper --pad-header --keep-one-line-blocks --keep-one-line-statements --convert-tabs --max-code-length=200 --pad-paren

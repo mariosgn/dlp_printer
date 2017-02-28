@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Urtica {% block additional_title%}{% end %}</title>
+    <meta name="description" content="{% block page_description%}{% end %}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ static_url("bootstrap.min.css") }}">
+    <!--link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC" -->
+    <link rel="stylesheet" href="{{ static_url("font-awesome.min.css") }}">
+    <link href="{{ static_url("style.css") }}" rel="stylesheet" type='text/css'>
+
+    {% block additional_stylesheet %}
+    {% end %}
+</head>
+<body>
+
+
+
+{% block content_nocontainer %}
+{% end %}
+
+<div class="container">
+{% if message %}
+    <div class="alert {{ message_type }} alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      {{ message }}
+    </div>
+{% end %}
+{% block content %}
+{% end %}
+</div>
+
+<script src="{{ static_url("jquery.min.js") }}"></script>
+<script src="{{ static_url("bootstrap.min.js") }}"></script>
+{% block additional_js %}{% end %}
+</body>
+</html>
+
